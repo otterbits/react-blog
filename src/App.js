@@ -8,7 +8,8 @@ function App() {
   let [글제목, 제목변경] = useState(['남자 코트 추천','강남 우동 맛집','파이썬독학']);
   let [likeCount, plusLike] = useState([0,0,0]);
   let [modal, setModal] = useState(false);
-
+  let [title, setTitle] = useState(0);
+  let [userInput, setUserInput] = useState('');
  
 
   return (
@@ -33,7 +34,14 @@ function App() {
           return (
           <div className='list' key={i}>
           <h4 onClick={
-          modal == false ? ()=>setModal(true) : ()=>setModal(false)}>{글제목[i]}</h4>
+          modal == false ? ()=>{setModal(true); setTitle(i);} : ()=>setModal(false)}>{글제목[i]}
+          <button onClick={(e)=>{
+            e.stopPropagation();
+            let copy = 글제목.filter((a, index) => index !== i);
+            제목변경(copy);
+
+          }}>글 삭제</button>
+          </h4>
           <span onClick={()=>{
             let copy = [...likeCount]
             copy[i] ++;
@@ -44,20 +52,38 @@ function App() {
       )})
       }
 
+      <input onChange={(e)=>{
+        setUserInput(e.target.value);
+      }}>
+      </input>
+      <button onClick={()=>{
+        let copyTitles = [...글제목, userInput];
+        let copyLikes = [...likeCount, 0];
+        
+        제목변경(copyTitles);
+        plusLike(copyLikes);
+      }}>
+        글 작성
+      </button>
+
       {
-        modal == true ? <Modal></Modal> : null
+        modal == true ? <Modal title={title} 제목변경={제목변경} 글제목={글제목}></Modal> : null
       }
       
     </div>
   );
 }
 
-function Modal () {
+function Modal (props) {
   return (
     <div className='modal'>
-      <h4>제목</h4>
+      <h4>{props.글제목[props.title]}</h4>
       <p>날짜</p>
       <p>상세내용</p>
+      <button onClick={()=> {
+        let copy = [...props.글제목]
+        copy[0] = '여자 코트 추천';
+        props.제목변경(copy)}}>글수정</button>
     </div>
   )
 }
