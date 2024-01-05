@@ -6,12 +6,10 @@ import { useState } from 'react';
 function App() {
   
   let [글제목, 제목변경] = useState(['남자 코트 추천','강남 우동 맛집','파이썬독학']);
-  let [likeCount, plusLike] = useState(0);
+  let [likeCount, plusLike] = useState([0,0,0]);
   let [modal, setModal] = useState(false);
 
-  [1,2,3].map(function(a){
-    console.log(a)
-  })
+ 
 
   return (
     <div className="App">
@@ -29,20 +27,22 @@ function App() {
             }}>제목 변경</button>
           </h4>
       </div>
-      <div className='list'>
-        <h4 onClick={
-          modal == false ? ()=>setModal(true) : ()=>setModal(false)}>{글제목[0]}
-          <span onClick={()=>plusLike(likeCount + 1)}>👍</span> {likeCount}</h4>
-        <p>2월 17일 발행</p>
-      </div>
-      <div className='list'>
-        <h4>{글제목[1]}</h4>
-        <p>2월 17일 발행</p>
-      </div>
-      <div className='list'>
-        <h4>{글제목[2]}</h4>
-        <p>2월 17일 발행</p>
-      </div>
+
+      {
+        글제목.map(function(a, i){
+          return (
+          <div className='list' key={i}>
+          <h4 onClick={
+          modal == false ? ()=>setModal(true) : ()=>setModal(false)}>{글제목[i]}</h4>
+          <span onClick={()=>{
+            let copy = [...likeCount]
+            copy[i] ++;
+            plusLike(copy)
+            }}>👍</span> {likeCount[i]}
+          <p>2월 17일 발행</p>
+        </div>
+      )})
+      }
 
       {
         modal == true ? <Modal></Modal> : null
